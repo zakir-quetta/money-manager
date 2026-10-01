@@ -7,267 +7,171 @@
 <title>Money Manager</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
   :root {
-    --bg: #0b1220;
-    --surface: #131c30;
-    --surface-2: #1c2740;
-    --border: #22304d;
-    --text: #eef2ff;
-    --muted: #8b9ab8;
-    --accent: #10b981;
-    --accent-soft: rgba(16, 185, 129, 0.12);
-    --danger: #f43f5e;
-    --danger-soft: rgba(244, 63, 94, 0.12);
-    --warning: #f59e0b;
-    --radius: 16px;
-    --radius-sm: 10px;
+    --bg: #0b1220; --surface: #131c30; --surface-2: #1c2740; --border: #22304d;
+    --text: #eef2ff; --muted: #8b9ab8;
+    --accent: #10b981; --accent-soft: rgba(16,185,129,0.12);
+    --danger: #f43f5e; --danger-soft: rgba(244,63,94,0.12);
+    --info: #38bdf8; --info-soft: rgba(56,189,248,0.12);
+    --radius: 16px; --radius-sm: 10px;
     --shadow: 0 4px 24px rgba(0,0,0,0.25);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
   [data-theme="light"] {
-    --bg: #f6f8fb;
-    --surface: #ffffff;
-    --surface-2: #f1f4f9;
-    --border: #e2e8f0;
-    --text: #0b1220;
-    --muted: #64748b;
-    --accent: #059669;
-    --accent-soft: rgba(5, 150, 105, 0.10);
-    --danger: #e11d48;
-    --danger-soft: rgba(225, 29, 72, 0.10);
-    --shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
+    --bg: #f6f8fb; --surface: #fff; --surface-2: #f1f4f9; --border: #e2e8f0;
+    --text: #0b1220; --muted: #64748b;
+    --accent: #059669; --accent-soft: rgba(5,150,105,0.10);
+    --danger: #e11d48; --danger-soft: rgba(225,29,72,0.10);
+    --info: #0284c7; --info-soft: rgba(2,132,199,0.10);
+    --shadow: 0 4px 24px rgba(15,23,42,0.06);
   }
-
   html, body { height: 100%; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 15px;
-    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     padding-bottom: calc(88px + var(--safe-bottom));
-    transition: background-color 0.2s, color 0.2s;
-    overscroll-behavior-y: none;
+    transition: background-color .2s, color .2s; overscroll-behavior-y: none;
   }
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
   input, select { font-family: inherit; font-size: 15px; }
-  input:focus, select:focus, button:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+  input:focus, select:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-  /* ---------- Top bar ---------- */
   .topbar {
     position: sticky; top: 0; z-index: 20;
     background: color-mix(in srgb, var(--bg) 85%, transparent);
     backdrop-filter: saturate(180%) blur(12px);
     -webkit-backdrop-filter: saturate(180%) blur(12px);
     border-bottom: 1px solid var(--border);
-    padding: 14px 20px;
-    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;
   }
   .topbar h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
-  .topbar .brand { display: flex; align-items: center; gap: 10px; }
+  .brand { display: flex; align-items: center; gap: 10px; }
   .brand-mark {
     width: 30px; height: 30px; border-radius: 9px;
     background: linear-gradient(135deg, var(--accent), #0891b2);
-    display: grid; place-items: center;
-    font-size: 15px; color: #fff;
+    display: grid; place-items: center; font-size: 15px; color: #fff;
   }
-  .install-btn {
-    background: var(--accent); color: #fff;
-    padding: 8px 14px; border-radius: 999px;
-    font-size: 13px; font-weight: 600;
-    transition: opacity 0.15s;
-  }
-  .install-btn:hover { opacity: 0.9; }
+  .install-btn { background: var(--accent); color: #fff; padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; }
 
-  /* ---------- Layout ---------- */
   main { max-width: 620px; margin: 0 auto; padding: 20px; }
-  .tab-panel { display: none; animation: fade 0.25s ease; }
+  .tab-panel { display: none; animation: fade .25s ease; }
   .tab-panel.active { display: block; }
   @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
-  }
-  .card-title {
-    font-size: 13px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.06em; color: var(--muted); margin-bottom: 14px;
-  }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+  .card-title { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 14px; }
   .row { display: flex; align-items: center; justify-content: space-between; }
   .muted { color: var(--muted); font-size: 13px; }
   .pos { color: var(--accent); }
   .neg { color: var(--danger); }
+  .neut { color: var(--info); }
 
-  /* ---------- Balance card ---------- */
   .balance-card {
     background: linear-gradient(135deg, #10b981 0%, #059669 55%, #047857 100%);
-    border: none; color: #fff; padding: 24px;
-    position: relative; overflow: hidden;
+    border: none; color: #fff; padding: 24px; position: relative; overflow: hidden;
   }
   .balance-card::after {
     content: ""; position: absolute; right: -40px; top: -40px;
-    width: 180px; height: 180px; border-radius: 50%;
-    background: rgba(255,255,255,0.08);
+    width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.08);
   }
-  .balance-card .label { font-size: 13px; opacity: 0.85; letter-spacing: 0.02em; }
+  .balance-card .label { font-size: 13px; opacity: .85; letter-spacing: .02em; }
   .balance-amount { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; margin: 6px 0 20px; }
   .balance-split { display: flex; gap: 12px; position: relative; z-index: 1; }
-  .balance-split .box {
-    flex: 1; background: rgba(255,255,255,0.14);
-    border-radius: 12px; padding: 10px 12px;
-    backdrop-filter: blur(6px);
-  }
-  .balance-split .box .label { font-size: 11px; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.05em; }
+  .balance-split .box { flex: 1; background: rgba(255,255,255,0.14); border-radius: 12px; padding: 10px 12px; backdrop-filter: blur(6px); }
+  .balance-split .box .label { font-size: 11px; opacity: .85; text-transform: uppercase; letter-spacing: .05em; }
   .balance-split .box .value { font-size: 15px; font-weight: 600; margin-top: 2px; }
 
-  /* ---------- Transaction list ---------- */
-  .tx-group-label {
-    font-size: 12px; font-weight: 600; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.06em;
-    padding: 14px 4px 6px;
-  }
-  .tx {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 4px;
-    border-bottom: 1px solid var(--border);
-  }
+  .acct-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+  .acct-row:last-child { border-bottom: none; }
+  .acct-icon { width: 38px; height: 38px; border-radius: 11px; background: var(--surface-2); display: grid; place-items: center; font-size: 18px; flex-shrink: 0; }
+  .acct-info { flex: 1; min-width: 0; }
+  .acct-name { font-size: 14px; font-weight: 500; }
+  .acct-sub { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+  .acct-amt { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .tx-group-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding: 14px 4px 6px; }
+  .tx { display: flex; align-items: center; gap: 12px; padding: 12px 4px; border-bottom: 1px solid var(--border); }
   .tx:last-child { border-bottom: none; }
-  .tx-icon {
-    width: 38px; height: 38px; border-radius: 11px;
-    background: var(--surface-2); display: grid; place-items: center;
-    font-size: 18px; flex-shrink: 0;
-  }
+  .tx-icon { width: 38px; height: 38px; border-radius: 11px; background: var(--surface-2); display: grid; place-items: center; font-size: 18px; flex-shrink: 0; }
   .tx-body { flex: 1; min-width: 0; }
   .tx-title { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .tx-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .tx-amount { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .tx-del {
-    width: 30px; height: 30px; border-radius: 8px;
-    display: grid; place-items: center; color: var(--muted);
-    font-size: 16px; transition: background 0.15s, color 0.15s;
-  }
+  .tx-del { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: var(--muted); font-size: 16px; }
   .tx-del:hover { background: var(--danger-soft); color: var(--danger); }
 
-  /* ---------- Empty state ---------- */
   .empty { text-align: center; padding: 32px 16px; color: var(--muted); }
-  .empty .emoji { font-size: 40px; margin-bottom: 10px; opacity: 0.8; }
+  .empty .emoji { font-size: 40px; margin-bottom: 10px; opacity: .8; }
   .empty .title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
   .empty .sub { font-size: 13px; }
 
-  /* ---------- Month nav ---------- */
-  .month-nav {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 16px;
-  }
-  .month-nav button {
-    width: 36px; height: 36px; border-radius: 10px;
-    background: var(--surface); border: 1px solid var(--border);
-    display: grid; place-items: center; font-size: 16px; color: var(--text);
-  }
-  .month-nav button:hover { background: var(--surface-2); }
+  .month-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .month-nav button { width: 36px; height: 36px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); display: grid; place-items: center; font-size: 16px; }
   .month-nav .label { font-size: 16px; font-weight: 600; }
 
-  /* ---------- Search ---------- */
   .search-wrap { position: relative; margin-bottom: 14px; }
-  .search-wrap input {
-    width: 100%; padding: 11px 14px 11px 40px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; color: var(--text);
-  }
+  .search-wrap input { width: 100%; padding: 11px 14px 11px 40px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; color: var(--text); }
   .search-wrap svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); }
 
-  /* ---------- Category breakdown ---------- */
   .cat-row { margin-bottom: 14px; }
   .cat-row:last-child { margin-bottom: 0; }
   .cat-row .row { margin-bottom: 6px; font-size: 13px; }
   .bar { height: 6px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
-  .bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.4s ease; }
+  .bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width .4s ease; }
 
-  /* ---------- Budgets ---------- */
   .budget { padding: 14px 0; border-bottom: 1px solid var(--border); }
   .budget:last-child { border-bottom: none; }
   .budget-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .budget-head .icon {
-    width: 34px; height: 34px; border-radius: 10px;
-    background: var(--surface-2); display: grid; place-items: center; font-size: 16px;
-  }
+  .budget-head .icon { width: 34px; height: 34px; border-radius: 10px; background: var(--surface-2); display: grid; place-items: center; font-size: 16px; }
   .budget-head .info { flex: 1; }
   .budget-head .name { font-size: 14px; font-weight: 500; }
   .budget-head .nums { font-size: 12px; color: var(--muted); margin-top: 1px; font-variant-numeric: tabular-nums; }
-  .budget-edit {
-    width: 88px; padding: 7px 10px; font-size: 13px;
-    background: var(--surface-2); border: 1px solid var(--border);
-    border-radius: 8px; color: var(--text); text-align: right;
-  }
+  .budget-edit { width: 88px; padding: 7px 10px; font-size: 13px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); text-align: right; }
 
-  /* ---------- Forms / Sheet ---------- */
-  .sheet-backdrop {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-    opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 90;
-  }
+  .sheet-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.5); opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 90; }
   .sheet-backdrop.open { opacity: 1; pointer-events: auto; }
   .sheet {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 100;
-    background: var(--surface);
-    border-radius: 22px 22px 0 0;
+    background: var(--surface); border-radius: 22px 22px 0 0;
     max-height: 92vh; overflow-y: auto;
-    transform: translateY(100%);
-    transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+    transform: translateY(100%); transition: transform .32s cubic-bezier(0.32, 0.72, 0, 1);
     padding-bottom: calc(20px + var(--safe-bottom));
-    box-shadow: 0 -8px 32px rgba(0,0,0,0.3);
-    max-width: 620px; margin: 0 auto;
+    box-shadow: 0 -8px 32px rgba(0,0,0,.3); max-width: 620px; margin: 0 auto;
   }
   .sheet.open { transform: translateY(0); }
-  .sheet-handle {
-    width: 40px; height: 4px; border-radius: 2px;
-    background: var(--border); margin: 10px auto 4px;
-  }
+  .sheet-handle { width: 40px; height: 4px; border-radius: 2px; background: var(--border); margin: 10px auto 4px; }
   .sheet-inner { padding: 8px 20px 4px; }
   .sheet-title { font-size: 18px; font-weight: 700; margin-bottom: 18px; }
 
-  .segmented {
-    display: flex; gap: 4px; padding: 4px;
-    background: var(--surface-2); border-radius: 12px; margin-bottom: 18px;
-  }
-  .segmented button {
-    flex: 1; padding: 9px; border-radius: 9px;
-    font-size: 14px; font-weight: 600; color: var(--muted);
-    transition: background 0.15s, color 0.15s;
-  }
-  .segmented button.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+  .segmented { display: flex; gap: 4px; padding: 4px; background: var(--surface-2); border-radius: 12px; margin-bottom: 18px; }
+  .segmented button { flex: 1; padding: 9px; border-radius: 9px; font-size: 13.5px; font-weight: 600; color: var(--muted); transition: all .15s; }
+  .segmented button.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.15); }
   .segmented button.active.income { color: var(--accent); }
   .segmented button.active.expense { color: var(--danger); }
+  .segmented button.active.transfer { color: var(--info); }
 
   .field { margin-bottom: 18px; }
-  .field label {
-    display: block; font-size: 12px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.06em; color: var(--muted); margin-bottom: 8px;
-  }
-  .amount-input {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--surface-2); border: 1px solid var(--border);
-    border-radius: 12px; padding: 10px 14px;
-  }
+  .field label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 8px; }
+
+  .amount-input { display: flex; align-items: center; gap: 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; }
   .amount-input .cur { font-size: 22px; font-weight: 600; color: var(--muted); }
-  .amount-input input {
-    flex: 1; background: none; border: none; outline: none;
-    color: var(--text); font-size: 24px; font-weight: 600;
-    font-variant-numeric: tabular-nums; width: 100%; padding: 2px 0;
-  }
-  .text-input {
-    width: 100%; padding: 11px 14px;
-    background: var(--surface-2); border: 1px solid var(--border);
-    border-radius: 12px; color: var(--text);
-  }
+  .amount-input input { flex: 1; background: none; border: none; outline: none; color: var(--text); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; width: 100%; padding: 2px 0; }
+  .text-input { width: 100%; padding: 11px 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; color: var(--text); }
   .text-input::placeholder { color: var(--muted); }
+
+  .chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px; margin: -2px; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 999px;
+    background: var(--surface-2); border: 2px solid transparent;
+    font-size: 13px; font-weight: 500; white-space: nowrap; color: var(--muted);
+    transition: all .15s;
+  }
+  .chip.selected { border-color: var(--accent); background: var(--accent-soft); color: var(--text); }
+  .chip.transfer-target.selected { border-color: var(--info); background: var(--info-soft); }
+  .chip .icon { font-size: 15px; }
 
   .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .cat-item {
@@ -275,38 +179,32 @@
     padding: 10px 2px; border-radius: 12px;
     background: var(--surface-2); border: 2px solid transparent;
     font-size: 10.5px; text-align: center; color: var(--muted);
-    transition: all 0.15s; line-height: 1.2;
+    transition: all .15s; line-height: 1.2;
   }
   .cat-item .icon { font-size: 20px; line-height: 1; }
-  .cat-item.selected {
-    border-color: var(--accent); background: var(--accent-soft); color: var(--text);
-  }
+  .cat-item.selected { border-color: var(--accent); background: var(--accent-soft); color: var(--text); }
 
-  .btn {
-    width: 100%; padding: 14px;
-    border-radius: 12px; font-size: 15px; font-weight: 600;
-    transition: opacity 0.15s, transform 0.05s;
-  }
-  .btn:active { transform: scale(0.98); }
+  .btn { width: 100%; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 600; transition: opacity .15s, transform .05s; }
+  .btn:active { transform: scale(.98); }
   .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary:disabled { opacity: .4; cursor: not-allowed; }
   .btn-ghost { background: var(--surface-2); color: var(--text); }
   .btn-danger { background: var(--danger-soft); color: var(--danger); }
+  .btn-info { background: var(--info); color: #fff; }
+  .btn-sm { width: auto; padding: 8px 14px; font-size: 13px; }
   .btn-row { display: flex; gap: 10px; }
 
-  /* ---------- FAB ---------- */
   .fab {
     position: fixed; right: 20px; bottom: calc(88px + var(--safe-bottom));
     width: 56px; height: 56px; border-radius: 18px;
     background: linear-gradient(135deg, var(--accent), #0891b2);
     color: #fff; font-size: 26px; font-weight: 300;
     display: grid; place-items: center;
-    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
-    z-index: 60; transition: transform 0.15s;
+    box-shadow: 0 8px 20px rgba(16,185,129,.35);
+    z-index: 60; transition: transform .15s;
   }
-  .fab:active { transform: scale(0.94); }
+  .fab:active { transform: scale(.94); }
 
-  /* ---------- Bottom nav ---------- */
   .bottom-nav {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
     background: color-mix(in srgb, var(--surface) 92%, transparent);
@@ -317,49 +215,35 @@
     padding: 8px 6px calc(8px + var(--safe-bottom));
     max-width: 620px; margin: 0 auto;
   }
-  .bottom-nav button {
-    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
-    padding: 6px 4px; font-size: 10.5px; font-weight: 500;
-    color: var(--muted); border-radius: 10px; transition: color 0.15s;
-  }
+  .bottom-nav button { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 4px; font-size: 10.5px; font-weight: 500; color: var(--muted); border-radius: 10px; transition: color .15s; }
   .bottom-nav button.active { color: var(--accent); }
   .bottom-nav svg { width: 22px; height: 22px; }
 
-  /* ---------- Toast ---------- */
-  .toast-host {
-    position: fixed; left: 50%; bottom: calc(110px + var(--safe-bottom));
-    transform: translateX(-50%); z-index: 200;
-    display: flex; flex-direction: column; gap: 8px; align-items: center;
-    pointer-events: none; width: calc(100% - 40px); max-width: 400px;
-  }
-  .toast {
-    background: #0f172a; color: #fff;
-    padding: 11px 16px; border-radius: 12px;
-    font-size: 13.5px; font-weight: 500;
-    box-shadow: var(--shadow);
-    animation: toast-in 0.25s ease;
-    max-width: 100%;
-  }
+  .toast-host { position: fixed; left: 50%; bottom: calc(110px + var(--safe-bottom)); transform: translateX(-50%); z-index: 200; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; width: calc(100% - 40px); max-width: 400px; }
+  .toast { background: #0f172a; color: #fff; padding: 11px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 500; box-shadow: var(--shadow); animation: toast-in .25s ease; max-width: 100%; }
   [data-theme="light"] .toast { background: #1e293b; }
   .toast.success { border-left: 3px solid var(--accent); }
   .toast.error { border-left: 3px solid var(--danger); }
-  @keyframes toast-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: none; }
-  }
+  @keyframes toast-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
-  /* ---------- Settings ---------- */
-  .settings-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 0; border-bottom: 1px solid var(--border);
-  }
+  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
   .settings-row:last-child { border-bottom: none; }
   .settings-row .label { font-size: 14px; font-weight: 500; }
   .settings-row .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .settings-row select, .settings-row input[type="text"] {
-    background: var(--surface-2); border: 1px solid var(--border);
-    color: var(--text); padding: 8px 12px; border-radius: 9px; font-size: 14px;
-  }
+  .settings-row select, .settings-row input[type="text"] { background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 9px; font-size: 14px; }
+
+  .acct-edit-row { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .acct-edit-row:last-child { border-bottom: none; }
+  .acct-edit-row .icon-btn { width: 42px; height: 42px; border-radius: 11px; background: var(--surface-2); display: grid; place-items: center; font-size: 20px; flex-shrink: 0; }
+  .acct-edit-row .fields { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .acct-edit-row .fields input { background: transparent; border: none; color: var(--text); padding: 3px 0; font-size: 14px; font-weight: 500; width: 100%; outline: none; }
+  .acct-edit-row .fields input.sub { font-size: 12.5px; font-weight: 400; color: var(--muted); }
+  .acct-edit-row .del { width: 32px; height: 32px; border-radius: 8px; color: var(--muted); display: grid; place-items: center; font-size: 15px; }
+  .acct-edit-row .del:hover { background: var(--danger-soft); color: var(--danger); }
+
+  .icon-picker { display: flex; flex-wrap: wrap; gap: 6px; }
+  .icon-picker button { width: 44px; height: 44px; border-radius: 11px; background: var(--surface-2); border: 2px solid transparent; display: grid; place-items: center; font-size: 20px; }
+  .icon-picker button.selected { border-color: var(--accent); background: var(--accent-soft); }
 
   .confirm-actions { display: flex; gap: 10px; margin-top: 6px; }
 </style>
@@ -367,10 +251,7 @@
 <body>
 
 <header class="topbar">
-  <div class="brand">
-    <div class="brand-mark">$</div>
-    <h1>Money Manager</h1>
-  </div>
+  <div class="brand"><div class="brand-mark">$</div><h1>Money Manager</h1></div>
   <button id="install-btn" class="install-btn" style="display:none;">Install</button>
 </header>
 
@@ -381,15 +262,14 @@
       <div class="label">Total Balance</div>
       <div class="balance-amount" id="balance">$0.00</div>
       <div class="balance-split">
-        <div class="box">
-          <div class="label">Income</div>
-          <div class="value" id="month-income">$0.00</div>
-        </div>
-        <div class="box">
-          <div class="label">Expenses</div>
-          <div class="value" id="month-expense">$0.00</div>
-        </div>
+        <div class="box"><div class="label">Income</div><div class="value" id="month-income">$0.00</div></div>
+        <div class="box"><div class="label">Expenses</div><div class="value" id="month-expense">$0.00</div></div>
       </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Accounts</div>
+      <div id="accounts-home"></div>
     </div>
 
     <div class="card">
@@ -406,17 +286,15 @@
   <!-- TRANSACTIONS -->
   <section id="transactions" class="tab-panel">
     <div class="month-nav">
-      <button onclick="shiftMonth(-1)" aria-label="Previous month">‹</button>
+      <button onclick="shiftMonth(-1)">‹</button>
       <div class="label" id="month-label"></div>
-      <button onclick="shiftMonth(1)" aria-label="Next month">›</button>
+      <button onclick="shiftMonth(1)">›</button>
     </div>
     <div class="search-wrap">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
       <input type="text" id="search" placeholder="Search transactions…" oninput="renderTransactions()">
     </div>
-    <div class="card" style="padding: 8px 20px;">
-      <div id="tx-list"></div>
-    </div>
+    <div class="card" style="padding: 8px 20px;"><div id="tx-list"></div></div>
   </section>
 
   <!-- BUDGETS -->
@@ -429,6 +307,11 @@
 
   <!-- SETTINGS -->
   <section id="settings" class="tab-panel">
+    <div class="card">
+      <div class="card-title">Accounts</div>
+      <div id="accounts-manage"></div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="openAccountSheet()">+ Add Account</button>
+    </div>
     <div class="card">
       <div class="card-title">Preferences</div>
       <div class="settings-row">
@@ -447,23 +330,18 @@
       <div class="card-title">Data</div>
       <div class="settings-row">
         <div><div class="label">Backup</div><div class="sub">Download all your data</div></div>
-        <button class="btn btn-ghost" style="width:auto; padding:8px 14px; font-size:13px;" onclick="exportData()">Export</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportData()">Export</button>
       </div>
       <div class="settings-row">
         <div><div class="label">Restore</div><div class="sub">Import from a backup file</div></div>
-        <label class="btn btn-ghost" style="width:auto; padding:8px 14px; font-size:13px; cursor:pointer;">
-          Import
-          <input type="file" accept="application/json,.json" onchange="importData(event)" style="display:none;">
-        </label>
+        <label class="btn btn-ghost btn-sm" style="cursor:pointer;">Import<input type="file" accept="application/json,.json" onchange="importData(event)" style="display:none;"></label>
       </div>
       <div class="settings-row">
         <div><div class="label" style="color:var(--danger);">Reset</div><div class="sub">Delete all data permanently</div></div>
-        <button class="btn btn-danger" style="width:auto; padding:8px 14px; font-size:13px;" onclick="confirmReset()">Reset</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmReset()">Reset</button>
       </div>
     </div>
-    <div class="card" style="text-align:center;">
-      <div class="muted" style="font-size:12px;">All data is stored only on this device.</div>
-    </div>
+    <div class="card" style="text-align:center;"><div class="muted" style="font-size:12px;">All data is stored only on this device.</div></div>
   </section>
 </main>
 
@@ -471,20 +349,16 @@
 
 <nav class="bottom-nav">
   <button data-tab="dashboard" class="active" onclick="switchTab('dashboard')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 12 3l9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
-    <span>Home</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 12 3l9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Home</span>
   </button>
   <button data-tab="transactions" onclick="switchTab('transactions')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"/></svg>
-    <span>Activity</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"/></svg><span>Activity</span>
   </button>
   <button data-tab="budgets" onclick="switchTab('budgets')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l5 3"/></svg>
-    <span>Budgets</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l5 3"/></svg><span>Budgets</span>
   </button>
   <button data-tab="settings" onclick="switchTab('settings')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
-    <span>Settings</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Settings</span>
   </button>
 </nav>
 
@@ -498,6 +372,7 @@
     <div class="segmented" id="type-seg">
       <button class="expense active" data-type="expense" onclick="setType('expense')">Expense</button>
       <button class="income" data-type="income" onclick="setType('income')">Income</button>
+      <button class="transfer" data-type="transfer" onclick="setType('transfer')">Transfer</button>
     </div>
 
     <div class="field">
@@ -508,7 +383,17 @@
       </div>
     </div>
 
-    <div class="field">
+    <div class="field" id="account-field">
+      <label id="account-label">Account</label>
+      <div class="chips" id="account-chips"></div>
+    </div>
+
+    <div class="field" id="to-account-field" style="display:none;">
+      <label>To Account</label>
+      <div class="chips" id="to-account-chips"></div>
+    </div>
+
+    <div class="field" id="category-field">
       <label>Category</label>
       <div class="cat-grid" id="cat-grid"></div>
     </div>
@@ -524,6 +409,36 @@
     </div>
 
     <button class="btn btn-primary" id="save-btn" onclick="saveTransaction()" disabled>Save Transaction</button>
+  </div>
+</div>
+
+<!-- ACCOUNT SHEET -->
+<div class="sheet-backdrop" id="acct-backdrop" onclick="closeAccountSheet()"></div>
+<div class="sheet" id="acct-sheet" role="dialog" aria-modal="true">
+  <div class="sheet-handle"></div>
+  <div class="sheet-inner">
+    <div class="sheet-title" id="acct-sheet-title">Add Account</div>
+    <input type="hidden" id="acct-edit-id">
+
+    <div class="field">
+      <label>Name</label>
+      <input type="text" id="acct-name" class="text-input" placeholder="e.g. Bank, Cash, Wallet" maxlength="24">
+    </div>
+
+    <div class="field">
+      <label>Icon</label>
+      <div class="icon-picker" id="icon-picker"></div>
+    </div>
+
+    <div class="field">
+      <label>Starting Balance</label>
+      <div class="amount-input">
+        <span class="cur" id="acct-cur">$</span>
+        <input type="text" inputmode="decimal" id="acct-initial" placeholder="0.00">
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="acct-save-btn" onclick="saveAccount()">Save Account</button>
   </div>
 </div>
 
@@ -544,47 +459,36 @@
 <div class="toast-host" id="toast-host"></div>
 
 <script>
-/* ============================================================
-   Config
-============================================================ */
-const STORAGE_KEY = 'money-manager-v2';
+const STORAGE_KEY = 'money-manager-v3';
 
 const CURRENCIES = [
-  { code: 'USD', symbol: '$' },
-  { code: 'EUR', symbol: '€' },
-  { code: 'GBP', symbol: '£' },
-  { code: 'INR', symbol: '₹' },
-  { code: 'JPY', symbol: '¥' },
-  { code: 'PKR', symbol: '₨' },
-  { code: 'AUD', symbol: 'A$' },
-  { code: 'CAD', symbol: 'C$' },
-  { code: 'BRL', symbol: 'R$' },
+  { code: 'USD', symbol: '$' }, { code: 'EUR', symbol: '€' }, { code: 'GBP', symbol: '£' },
+  { code: 'INR', symbol: '₹' }, { code: 'JPY', symbol: '¥' }, { code: 'PKR', symbol: '₨' },
+  { code: 'AUD', symbol: 'A$' }, { code: 'CAD', symbol: 'C$' }, { code: 'BRL', symbol: 'R$' },
   { code: 'NGN', symbol: '₦' }
 ];
 
 const CATEGORIES = {
   expense: [
-    { id: 'food',          label: 'Food',       icon: '🍔' },
-    { id: 'transport',     label: 'Transport',  icon: '🚗' },
-    { id: 'housing',       label: 'Housing',    icon: '🏠' },
-    { id: 'utilities',     label: 'Utilities',  icon: '💡' },
-    { id: 'entertainment', label: 'Fun',        icon: '🎬' },
-    { id: 'shopping',      label: 'Shopping',   icon: '🛍️' },
-    { id: 'health',        label: 'Health',     icon: '💊' },
-    { id: 'other',         label: 'Other',      icon: '📦' }
+    { id: 'food', label: 'Food', icon: '🍔' }, { id: 'transport', label: 'Transport', icon: '🚗' },
+    { id: 'housing', label: 'Housing', icon: '🏠' }, { id: 'utilities', label: 'Utilities', icon: '💡' },
+    { id: 'entertainment', label: 'Fun', icon: '🎬' }, { id: 'shopping', label: 'Shopping', icon: '🛍️' },
+    { id: 'health', label: 'Health', icon: '💊' }, { id: 'other', label: 'Other', icon: '📦' }
   ],
   income: [
-    { id: 'salary',   label: 'Salary',   icon: '💼' },
-    { id: 'business', label: 'Business', icon: '📈' },
-    { id: 'gifts',    label: 'Gifts',    icon: '🎁' },
-    { id: 'other',    label: 'Other',    icon: '💰' }
+    { id: 'salary', label: 'Salary', icon: '💼' }, { id: 'business', label: 'Business', icon: '📈' },
+    { id: 'gifts', label: 'Gifts', icon: '🎁' }, { id: 'other', label: 'Other', icon: '💰' }
   ]
 };
 
-/* ============================================================
-   State
-============================================================ */
+const ACCOUNT_ICONS = ['💵','🏦','💳','💰','🏧','📱','💎','🪙','🏪','👛'];
+const DEFAULT_ACCOUNTS = [
+  { id: 'cash', name: 'Cash', icon: '💵', initial: 0 },
+  { id: 'bank', name: 'Bank', icon: '🏦', initial: 0 }
+];
+
 let state = {
+  accounts: [...DEFAULT_ACCOUNTS],
   transactions: [],
   budgets: {},
   settings: { currencyCode: 'USD', theme: 'dark' }
@@ -594,7 +498,9 @@ let ui = {
   activeTab: 'dashboard',
   txMonth: currentMonth(),
   type: 'expense',
-  selectedCategory: 'food'
+  selectedCategory: 'food',
+  selectedAccount: 'cash',
+  selectedToAccount: 'bank'
 };
 
 function currentMonth() {
@@ -602,18 +508,38 @@ function currentMonth() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
 
-/* ============================================================
-   Persistence
-============================================================ */
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+/* ---------- Persistence ---------- */
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed.transactions)) state.transactions = parsed.transactions;
-    if (parsed.budgets && typeof parsed.budgets === 'object') state.budgets = parsed.budgets;
-    if (parsed.settings) state.settings = { ...state.settings, ...parsed.settings };
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed.transactions)) state.transactions = parsed.transactions;
+      if (parsed.budgets && typeof parsed.budgets === 'object') state.budgets = parsed.budgets;
+      if (parsed.settings) state.settings = { ...state.settings, ...parsed.settings };
+      if (Array.isArray(parsed.accounts) && parsed.accounts.length) state.accounts = parsed.accounts;
+    } else {
+      // migrate from v2 if present
+      const old = localStorage.getItem('money-manager-v2');
+      if (old) {
+        const p = JSON.parse(old);
+        if (p.transactions) {
+          state.transactions = p.transactions.map(t => ({ ...t, accountId: t.accountId || 'cash' }));
+        }
+        if (p.budgets) state.budgets = p.budgets;
+        if (p.settings) state.settings = { ...state.settings, ...p.settings };
+      }
+    }
   } catch (e) { console.warn('Load failed', e); }
+  // ensure every transaction has an accountId
+  state.transactions.forEach(t => {
+    if (!t.accountId || !state.accounts.find(a => a.id === t.accountId)) t.accountId = state.accounts[0].id;
+    if (t.type === 'transfer' && (!t.toAccountId || !state.accounts.find(a => a.id === t.toAccountId))) {
+      t.toAccountId = state.accounts[1] ? state.accounts[1].id : state.accounts[0].id;
+    }
+  });
 }
 
 function saveState() {
@@ -621,25 +547,17 @@ function saveState() {
   catch (e) { toast('Could not save data', 'error'); }
 }
 
-/* ============================================================
-   Formatting
-============================================================ */
-function formatMoney(amount, opts = {}) {
-  const { showSign = false } = opts;
+/* ---------- Helpers ---------- */
+function formatMoney(amount) {
   const abs = Math.abs(amount);
-  let formatted;
+  let s;
   try {
-    formatted = new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency: state.settings.currencyCode,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+    s = new Intl.NumberFormat(undefined, {
+      style: 'currency', currency: state.settings.currencyCode,
+      minimumFractionDigits: 2, maximumFractionDigits: 2
     }).format(abs);
-  } catch {
-    formatted = '$' + abs.toFixed(2);
-  }
-  if (!showSign) return formatted;
-  return (amount < 0 ? '−' : '+') + formatted;
+  } catch { s = '$' + abs.toFixed(2); }
+  return s;
 }
 
 function currencySymbol() {
@@ -662,12 +580,32 @@ function monthLabel(ym) {
 }
 
 function getCategory(type, id) {
-  return CATEGORIES[type].find(c => c.id === id) || CATEGORIES[type][CATEGORIES[type].length - 1];
+  const list = CATEGORIES[type] || CATEGORIES.expense;
+  return list.find(c => c.id === id) || list[list.length - 1];
 }
 
-/* ============================================================
-   Toast
-============================================================ */
+function getAccount(id) {
+  return state.accounts.find(a => a.id === id) || state.accounts[0];
+}
+
+function accountBalance(accId) {
+  const acc = getAccount(accId);
+  let bal = Number(acc.initial) || 0;
+  state.transactions.forEach(t => {
+    if (t.type === 'income' && t.accountId === accId) bal += t.amount;
+    else if (t.type === 'expense' && t.accountId === accId) bal -= t.amount;
+    else if (t.type === 'transfer') {
+      if (t.accountId === accId) bal -= t.amount;
+      if (t.toAccountId === accId) bal += t.amount;
+    }
+  });
+  return bal;
+}
+
+function totalBalance() {
+  return state.accounts.reduce((s, a) => s + accountBalance(a.id), 0);
+}
+
 function toast(message, variant = 'success') {
   const host = document.getElementById('toast-host');
   const el = document.createElement('div');
@@ -676,15 +614,20 @@ function toast(message, variant = 'success') {
   host.appendChild(el);
   setTimeout(() => {
     el.style.transition = 'opacity .25s, transform .25s';
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(8px)';
+    el.style.opacity = '0'; el.style.transform = 'translateY(8px)';
     setTimeout(() => el.remove(), 260);
   }, 2200);
 }
 
-/* ============================================================
-   Tabs
-============================================================ */
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+function emptyHTML(emoji, title, sub) {
+  return `<div class="empty"><div class="emoji">${emoji}</div><div class="title">${title}</div><div class="sub">${sub}</div></div>`;
+}
+
+/* ---------- Tabs ---------- */
 function switchTab(id) {
   ui.activeTab = id;
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === id));
@@ -696,21 +639,32 @@ function switchTab(id) {
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
-/* ============================================================
-   Dashboard
-============================================================ */
+/* ---------- Dashboard ---------- */
 function renderDashboard() {
   const month = currentMonth();
   const monthTx = state.transactions.filter(t => t.date.startsWith(month));
   const income = monthTx.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
   const expense = monthTx.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
-  const balance = state.transactions.reduce((s, t) => s + (t.type === 'income' ? t.amount : -t.amount), 0);
 
-  document.getElementById('balance').textContent = formatMoney(balance);
+  document.getElementById('balance').textContent = formatMoney(totalBalance());
   document.getElementById('month-income').textContent = formatMoney(income);
   document.getElementById('month-expense').textContent = formatMoney(expense);
 
-  // Recent
+  document.getElementById('accounts-home').innerHTML = state.accounts.map(a => {
+    const bal = accountBalance(a.id);
+    const cls = bal < 0 ? 'neg' : '';
+    const initials = Number(a.initial) || 0;
+    return `
+      <div class="acct-row">
+        <div class="acct-icon">${a.icon}</div>
+        <div class="acct-info">
+          <div class="acct-name">${escapeHTML(a.name)}</div>
+          ${initials ? `<div class="acct-sub">Started at ${formatMoney(initials)}</div>` : ''}
+        </div>
+        <div class="acct-amt ${cls}">${bal < 0 ? '−' : ''}${formatMoney(bal)}</div>
+      </div>`;
+  }).join('');
+
   const recent = [...state.transactions]
     .sort((a, b) => (b.date + b.createdAt).localeCompare(a.date + a.createdAt))
     .slice(0, 5);
@@ -718,30 +672,38 @@ function renderDashboard() {
     ? recent.map(txRowHTML).join('')
     : emptyHTML('💸', 'No activity yet', 'Tap + to add your first transaction');
 
-  // Category breakdown
   const cats = {};
-  monthTx.filter(t => t.type === 'expense').forEach(t => {
-    cats[t.category] = (cats[t.category] || 0) + t.amount;
-  });
+  monthTx.filter(t => t.type === 'expense').forEach(t => { cats[t.category] = (cats[t.category] || 0) + t.amount; });
   const entries = Object.entries(cats).sort((a, b) => b[1] - a[1]);
   const max = entries.length ? entries[0][1] : 1;
   document.getElementById('category-breakdown').innerHTML = entries.length
     ? entries.map(([catId, amt]) => {
         const cat = getCategory('expense', catId);
-        return `
-          <div class="cat-row">
-            <div class="row">
-              <span>${cat.icon} ${cat.label}</span>
-              <span style="font-variant-numeric: tabular-nums; font-weight:600;">${formatMoney(amt)}</span>
-            </div>
-            <div class="bar"><div class="bar-fill" style="width:${(amt / max) * 100}%"></div></div>
-          </div>`;
+        return `<div class="cat-row">
+          <div class="row"><span>${cat.icon} ${cat.label}</span><span style="font-variant-numeric:tabular-nums;font-weight:600;">${formatMoney(amt)}</span></div>
+          <div class="bar"><div class="bar-fill" style="width:${(amt/max)*100}%"></div></div>
+        </div>`;
       }).join('')
     : emptyHTML('📊', 'Nothing to show', 'Add an expense to see the breakdown');
 }
 
 function txRowHTML(t) {
+  if (t.type === 'transfer') {
+    const from = getAccount(t.accountId);
+    const to = getAccount(t.toAccountId);
+    return `
+      <div class="tx">
+        <div class="tx-icon">⇄</div>
+        <div class="tx-body">
+          <div class="tx-title">${escapeHTML(t.note || (from.name + ' → ' + to.name))}</div>
+          <div class="tx-sub">${from.icon} ${from.name} → ${to.icon} ${to.name} · ${formatDate(t.date)}</div>
+        </div>
+        <div class="tx-amount neut">${formatMoney(t.amount)}</div>
+        <button class="tx-del" onclick="askDelete('${t.id}')" aria-label="Delete">✕</button>
+      </div>`;
+  }
   const cat = getCategory(t.type, t.category);
+  const acc = getAccount(t.accountId);
   const sign = t.type === 'income' ? '+' : '−';
   const cls = t.type === 'income' ? 'pos' : 'neg';
   return `
@@ -749,24 +711,14 @@ function txRowHTML(t) {
       <div class="tx-icon">${cat.icon}</div>
       <div class="tx-body">
         <div class="tx-title">${escapeHTML(t.note || cat.label)}</div>
-        <div class="tx-sub">${cat.label} · ${formatDate(t.date)}</div>
+        <div class="tx-sub">${cat.label} · ${acc.icon} ${acc.name} · ${formatDate(t.date)}</div>
       </div>
       <div class="tx-amount ${cls}">${sign}${formatMoney(t.amount)}</div>
       <button class="tx-del" onclick="askDelete('${t.id}')" aria-label="Delete">✕</button>
     </div>`;
 }
 
-function emptyHTML(emoji, title, sub) {
-  return `<div class="empty"><div class="emoji">${emoji}</div><div class="title">${title}</div><div class="sub">${sub}</div></div>`;
-}
-
-function escapeHTML(s) {
-  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-}
-
-/* ============================================================
-   Transactions
-============================================================ */
+/* ---------- Transactions ---------- */
 function shiftMonth(delta) {
   const [y, m] = ui.txMonth.split('-').map(Number);
   const d = new Date(y, m - 1 + delta, 1);
@@ -780,8 +732,13 @@ function renderTransactions() {
   let tx = state.transactions.filter(t => t.date.startsWith(ui.txMonth));
   if (q) {
     tx = tx.filter(t => {
+      if (t.type === 'transfer') {
+        const from = getAccount(t.accountId), to = getAccount(t.toAccountId);
+        return (t.note || '').toLowerCase().includes(q) || from.name.toLowerCase().includes(q) || to.name.toLowerCase().includes(q);
+      }
       const cat = getCategory(t.type, t.category);
-      return (t.note || '').toLowerCase().includes(q) || cat.label.toLowerCase().includes(q);
+      const acc = getAccount(t.accountId);
+      return (t.note || '').toLowerCase().includes(q) || cat.label.toLowerCase().includes(q) || acc.name.toLowerCase().includes(q);
     });
   }
   tx.sort((a, b) => (b.date + b.createdAt).localeCompare(a.date + a.createdAt));
@@ -791,21 +748,16 @@ function renderTransactions() {
     host.innerHTML = emptyHTML('🔍', q ? 'No matches' : 'No transactions', q ? 'Try a different search' : 'Nothing recorded this month');
     return;
   }
-
-  // Group by date
   const groups = {};
   tx.forEach(t => { (groups[t.date] = groups[t.date] || []).push(t); });
   const ordered = Object.keys(groups).sort((a, b) => b.localeCompare(a));
-
   host.innerHTML = ordered.map(date => `
     <div class="tx-group-label">${formatDate(date)}</div>
     ${groups[date].map(txRowHTML).join('')}
   `).join('');
 }
 
-/* ============================================================
-   Budgets
-============================================================ */
+/* ---------- Budgets ---------- */
 function renderBudgets() {
   const month = currentMonth();
   const spentByCat = {};
@@ -831,8 +783,8 @@ function renderBudgets() {
                  value="${budget || ''}" onchange="setBudget('${cat.id}', this.value)" aria-label="${cat.label} budget">
         </div>
         ${budget > 0 ? `
-          <div class="bar"><div class="bar-fill" style="width:${pct}%; ${over ? 'background:var(--danger);' : ''}"></div></div>
-          <div class="muted" style="margin-top:6px; font-size:12px;">
+          <div class="bar"><div class="bar-fill" style="width:${pct}%;${over ? 'background:var(--danger);' : ''}"></div></div>
+          <div class="muted" style="margin-top:6px;font-size:12px;">
             ${over ? `Over by ${formatMoney(Math.abs(remaining))}` : `${formatMoney(remaining)} left`}
           </div>` : ''}
       </div>`;
@@ -841,30 +793,57 @@ function renderBudgets() {
 
 function setBudget(catId, value) {
   const n = parseFloat(value);
-  if (isNaN(n) || n < 0) { state.budgets[catId] = 0; }
-  else { state.budgets[catId] = Math.round(n * 100) / 100; }
-  saveState();
-  renderBudgets();
-  toast('Budget updated');
+  state.budgets[catId] = (isNaN(n) || n < 0) ? 0 : Math.round(n * 100) / 100;
+  saveState(); renderBudgets(); toast('Budget updated');
 }
 
-/* ============================================================
-   Settings
-============================================================ */
+/* ---------- Settings ---------- */
 function renderSettings() {
   const curSel = document.getElementById('currency-select');
   curSel.innerHTML = CURRENCIES.map(c => `<option value="${c.code}">${c.symbol} ${c.code}</option>`).join('');
   curSel.value = state.settings.currencyCode;
   document.getElementById('theme-select').value = state.settings.theme;
+  renderAccountsManage();
+}
+
+function renderAccountsManage() {
+  document.getElementById('accounts-manage').innerHTML = state.accounts.map(a => {
+    const used = state.transactions.some(t => t.accountId === a.id || t.toAccountId === a.id);
+    return `
+      <div class="acct-edit-row">
+        <div class="icon-btn">${a.icon}</div>
+        <div class="fields">
+          <input type="text" value="${escapeHTML(a.name)}" maxlength="24"
+                 onchange="updateAccountField('${a.id}','name',this.value)" aria-label="Account name">
+          <input type="text" inputmode="decimal" class="sub" placeholder="Starting balance"
+                 value="${a.initial || ''}"
+                 onchange="updateAccountField('${a.id}','initial',this.value)" aria-label="Starting balance">
+        </div>
+        <button class="del" onclick="askDeleteAccount('${a.id}')" aria-label="Delete account" ${used ? 'style="opacity:.35;cursor:not-allowed;"' : ''}>✕</button>
+      </div>`;
+  }).join('');
+}
+
+function updateAccountField(id, field, value) {
+  const acc = state.accounts.find(a => a.id === id);
+  if (!acc) return;
+  if (field === 'initial') {
+    const n = parseFloat(value);
+    acc.initial = (isNaN(n) || n < 0) ? 0 : Math.round(n * 100) / 100;
+  } else {
+    acc.name = value.trim() || acc.name;
+  }
+  saveState();
+  renderDashboard();
+  renderAccountsManage();
 }
 
 function onCurrencyChange(code) {
   state.settings.currencyCode = code;
   saveState();
   document.getElementById('cur-symbol').textContent = currencySymbol();
-  renderDashboard();
-  renderTransactions();
-  renderBudgets();
+  document.getElementById('acct-cur').textContent = currencySymbol();
+  renderDashboard(); renderTransactions(); renderBudgets();
 }
 
 function onThemeChange(theme) {
@@ -873,17 +852,18 @@ function onThemeChange(theme) {
   document.documentElement.setAttribute('data-theme', theme);
 }
 
-/* ============================================================
-   Add Transaction Sheet
-============================================================ */
+/* ---------- Add Transaction Sheet ---------- */
 function openSheet() {
   ui.type = 'expense';
   ui.selectedCategory = 'food';
+  ui.selectedAccount = state.accounts[0].id;
+  ui.selectedToAccount = state.accounts[1] ? state.accounts[1].id : state.accounts[0].id;
   document.getElementById('amount').value = '';
   document.getElementById('note').value = '';
   document.getElementById('date').value = new Date().toISOString().slice(0, 10);
   document.getElementById('cur-symbol').textContent = currencySymbol();
   updateTypeButtons();
+  renderAccountChips();
   renderCategoryGrid();
   updateSaveButton();
   document.getElementById('sheet-backdrop').classList.add('open');
@@ -898,75 +878,116 @@ function closeSheet() {
 
 function setType(type) {
   ui.type = type;
-  ui.selectedCategory = CATEGORIES[type][0].id;
+  if (type !== 'transfer') ui.selectedCategory = CATEGORIES[type][0].id;
   updateTypeButtons();
+  renderAccountChips();
   renderCategoryGrid();
+  updateSaveButton();
 }
 
 function updateTypeButtons() {
-  document.querySelectorAll('#type-seg button').forEach(b => {
-    b.classList.toggle('active', b.dataset.type === ui.type);
-  });
+  document.querySelectorAll('#type-seg button').forEach(b => b.classList.toggle('active', b.dataset.type === ui.type));
+  const isTransfer = ui.type === 'transfer';
+  document.getElementById('category-field').style.display = isTransfer ? 'none' : '';
+  document.getElementById('to-account-field').style.display = isTransfer ? '' : 'none';
+  document.getElementById('account-label').textContent = isTransfer ? 'From Account' : 'Account';
+}
+
+function renderAccountChips() {
+  const chips = state.accounts.map(a => `
+    <button class="chip ${a.id === ui.selectedAccount ? 'selected' : ''}"
+            onclick="selectAccount('${a.id}')" type="button">
+      <span class="icon">${a.icon}</span><span>${escapeHTML(a.name)}</span>
+    </button>`).join('');
+  document.getElementById('account-chips').innerHTML = chips;
+
+  const toChips = state.accounts.map(a => `
+    <button class="chip transfer-target ${a.id === ui.selectedToAccount ? 'selected' : ''}"
+            onclick="selectToAccount('${a.id}')" type="button">
+      <span class="icon">${a.icon}</span><span>${escapeHTML(a.name)}</span>
+    </button>`).join('');
+  document.getElementById('to-account-chips').innerHTML = toChips;
+}
+
+function selectAccount(id) {
+  ui.selectedAccount = id;
+  if (ui.type === 'transfer' && ui.selectedToAccount === id) {
+    const other = state.accounts.find(a => a.id !== id);
+    if (other) ui.selectedToAccount = other.id;
+  }
+  renderAccountChips();
+  updateSaveButton();
+}
+
+function selectToAccount(id) {
+  ui.selectedToAccount = id;
+  if (id === ui.selectedAccount) {
+    const other = state.accounts.find(a => a.id !== id);
+    if (other) ui.selectedAccount = other.id;
+  }
+  renderAccountChips();
+  updateSaveButton();
 }
 
 function renderCategoryGrid() {
-  const grid = document.getElementById('cat-grid');
-  grid.innerHTML = CATEGORIES[ui.type].map(cat => `
+  if (ui.type === 'transfer') return;
+  document.getElementById('cat-grid').innerHTML = CATEGORIES[ui.type].map(cat => `
     <button class="cat-item ${cat.id === ui.selectedCategory ? 'selected' : ''}"
             onclick="selectCategory('${cat.id}')" type="button">
-      <span class="icon">${cat.icon}</span>
-      <span>${cat.label}</span>
+      <span class="icon">${cat.icon}</span><span>${cat.label}</span>
     </button>`).join('');
 }
 
-function selectCategory(id) {
-  ui.selectedCategory = id;
-  renderCategoryGrid();
-}
+function selectCategory(id) { ui.selectedCategory = id; renderCategoryGrid(); }
 
 function updateSaveButton() {
   const raw = document.getElementById('amount').value.replace(',', '.');
   const amount = parseFloat(raw);
-  document.getElementById('save-btn').disabled = !(amount > 0);
+  let valid = amount > 0;
+  if (ui.type === 'transfer' && ui.selectedAccount === ui.selectedToAccount) valid = false;
+  document.getElementById('save-btn').disabled = !valid;
 }
 
 function saveTransaction() {
   const raw = document.getElementById('amount').value.replace(',', '.');
   const amount = parseFloat(raw);
   if (!(amount > 0)) return;
-
   const date = document.getElementById('date').value || new Date().toISOString().slice(0, 10);
   const note = document.getElementById('note').value.trim();
 
-  state.transactions.push({
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
-    type: ui.type,
-    amount: Math.round(amount * 100) / 100,
-    category: ui.selectedCategory,
-    date,
-    note,
-    createdAt: new Date().toISOString()
-  });
+  const base = { id: uid(), amount: Math.round(amount * 100) / 100, date, note, createdAt: new Date().toISOString() };
+
+  if (ui.type === 'transfer') {
+    if (ui.selectedAccount === ui.selectedToAccount) return;
+    state.transactions.push({ ...base, type: 'transfer', accountId: ui.selectedAccount, toAccountId: ui.selectedToAccount });
+  } else {
+    state.transactions.push({ ...base, type: ui.type, accountId: ui.selectedAccount, category: ui.selectedCategory });
+  }
+
   saveState();
   closeSheet();
   renderDashboard();
   if (ui.activeTab === 'transactions') renderTransactions();
   if (ui.activeTab === 'budgets') renderBudgets();
-  toast(ui.type === 'income' ? 'Income added' : 'Expense added');
+  toast(ui.type === 'income' ? 'Income added' : ui.type === 'expense' ? 'Expense added' : 'Transfer recorded');
 }
 
-/* ============================================================
-   Delete
-============================================================ */
+/* ---------- Delete transaction ---------- */
 let pendingDeleteId = null;
 function askDelete(id) {
   const tx = state.transactions.find(t => t.id === id);
   if (!tx) return;
   pendingDeleteId = id;
-  const cat = getCategory(tx.type, tx.category);
+  let msg;
+  if (tx.type === 'transfer') {
+    const f = getAccount(tx.accountId), t = getAccount(tx.toAccountId);
+    msg = `${f.name} → ${t.name} — ${formatMoney(tx.amount)}.`;
+  } else {
+    const cat = getCategory(tx.type, tx.category);
+    msg = `${cat.label} — ${formatMoney(tx.amount)}${tx.note ? ' · ' + tx.note : ''}.`;
+  }
   document.getElementById('confirm-title').textContent = 'Delete transaction?';
-  document.getElementById('confirm-msg').textContent =
-    `${cat.label} — ${formatMoney(tx.amount)}${tx.note ? ' · ' + tx.note : ''}. This can't be undone.`;
+  document.getElementById('confirm-msg').textContent = msg + " This can't be undone.";
   document.getElementById('confirm-ok').onclick = doDelete;
   document.getElementById('confirm-backdrop').classList.add('open');
   document.getElementById('confirm-sheet').classList.add('open');
@@ -978,46 +999,114 @@ function closeConfirm() {
 }
 function doDelete() {
   state.transactions = state.transactions.filter(t => t.id !== pendingDeleteId);
-  saveState();
-  closeConfirm();
-  renderDashboard();
+  saveState(); closeConfirm(); renderDashboard();
   if (ui.activeTab === 'transactions') renderTransactions();
   if (ui.activeTab === 'budgets') renderBudgets();
   toast('Transaction deleted');
 }
 
-/* ============================================================
-   Reset
-============================================================ */
+/* ---------- Account sheet ---------- */
+let pendingIcon = ACCOUNT_ICONS[0];
+
+function openAccountSheet(editId = null) {
+  const sheet = document.getElementById('acct-sheet');
+  document.getElementById('acct-edit-id').value = editId || '';
+  document.getElementById('acct-sheet-title').textContent = editId ? 'Edit Account' : 'Add Account';
+  document.getElementById('acct-cur').textContent = currencySymbol();
+
+  if (editId) {
+    const a = state.accounts.find(x => x.id === editId);
+    document.getElementById('acct-name').value = a.name;
+    document.getElementById('acct-initial').value = a.initial || '';
+    pendingIcon = a.icon;
+  } else {
+    document.getElementById('acct-name').value = '';
+    document.getElementById('acct-initial').value = '';
+    pendingIcon = ACCOUNT_ICONS[0];
+  }
+
+  renderIconPicker();
+  document.getElementById('acct-backdrop').classList.add('open');
+  sheet.classList.add('open');
+  setTimeout(() => document.getElementById('acct-name').focus(), 300);
+}
+
+function closeAccountSheet() {
+  document.getElementById('acct-backdrop').classList.remove('open');
+  document.getElementById('acct-sheet').classList.remove('open');
+}
+
+function renderIconPicker() {
+  document.getElementById('icon-picker').innerHTML = ACCOUNT_ICONS.map(i =>
+    `<button type="button" class="${i === pendingIcon ? 'selected' : ''}" onclick="pickIcon('${i}')">${i}</button>`
+  ).join('');
+}
+function pickIcon(i) { pendingIcon = i; renderIconPicker(); }
+
+function saveAccount() {
+  const editId = document.getElementById('acct-edit-id').value;
+  const name = document.getElementById('acct-name').value.trim();
+  const raw = document.getElementById('acct-initial').value.replace(',', '.');
+  const n = parseFloat(raw);
+  const initial = (isNaN(n) || n < 0) ? 0 : Math.round(n * 100) / 100;
+
+  if (!name) { toast('Please enter a name', 'error'); return; }
+
+  if (editId) {
+    const a = state.accounts.find(x => x.id === editId);
+    a.name = name; a.icon = pendingIcon; a.initial = initial;
+    toast('Account updated');
+  } else {
+    state.accounts.push({ id: uid(), name, icon: pendingIcon, initial });
+    toast('Account added');
+  }
+  saveState();
+  closeAccountSheet();
+  renderDashboard();
+  renderAccountsManage();
+}
+
+let pendingDeleteAccountId = null;
+function askDeleteAccount(id) {
+  const used = state.transactions.some(t => t.accountId === id || t.toAccountId === id);
+  if (used) { toast('Cannot delete — account has transactions', 'error'); return; }
+  if (state.accounts.length <= 1) { toast('Keep at least one account', 'error'); return; }
+  const a = state.accounts.find(x => x.id === id);
+  pendingDeleteAccountId = id;
+  document.getElementById('confirm-title').textContent = 'Delete account?';
+  document.getElementById('confirm-msg').textContent = `"${a.name}" will be removed. This can't be undone.`;
+  document.getElementById('confirm-ok').onclick = () => {
+    state.accounts = state.accounts.filter(x => x.id !== pendingDeleteAccountId);
+    saveState(); closeConfirm();
+    renderDashboard(); renderAccountsManage();
+    toast('Account deleted');
+  };
+  document.getElementById('confirm-backdrop').classList.add('open');
+  document.getElementById('confirm-sheet').classList.add('open');
+}
+
+/* ---------- Reset ---------- */
 function confirmReset() {
   document.getElementById('confirm-title').textContent = 'Reset all data?';
-  document.getElementById('confirm-msg').textContent =
-    'This deletes every transaction and budget on this device. Export a backup first if you might need it.';
+  document.getElementById('confirm-msg').textContent = 'This deletes every transaction, budget, and account on this device. Export a backup first if you might need it.';
   document.getElementById('confirm-ok').onclick = () => {
-    state = { transactions: [], budgets: {}, settings: state.settings };
-    saveState();
-    closeConfirm();
-    renderDashboard();
-    renderTransactions();
-    renderBudgets();
+    const theme = state.settings.theme, cur = state.settings.currencyCode;
+    state = { accounts: [...DEFAULT_ACCOUNTS], transactions: [], budgets: {}, settings: { currencyCode: cur, theme } };
+    saveState(); closeConfirm();
+    renderDashboard(); renderTransactions(); renderBudgets(); renderSettings();
     toast('All data cleared');
   };
   document.getElementById('confirm-backdrop').classList.add('open');
   document.getElementById('confirm-sheet').classList.add('open');
 }
 
-/* ============================================================
-   Import / Export
-============================================================ */
+/* ---------- Import / Export ---------- */
 function exportData() {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `money-manager-${new Date().toISOString().slice(0,10)}.json`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+  a.href = url; a.download = `money-manager-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
   URL.revokeObjectURL(url);
   toast('Backup downloaded');
 }
@@ -1032,77 +1121,58 @@ function importData(event) {
       if (!Array.isArray(data.transactions)) throw new Error('Invalid file');
       state.transactions = data.transactions;
       state.budgets = data.budgets || {};
+      if (Array.isArray(data.accounts) && data.accounts.length) state.accounts = data.accounts;
       if (data.settings) {
         state.settings = { ...state.settings, ...data.settings };
         document.documentElement.setAttribute('data-theme', state.settings.theme);
       }
+      loadState(); // normalise accountIds
       saveState();
-      renderDashboard();
-      renderTransactions();
-      renderBudgets();
-      renderSettings();
+      renderDashboard(); renderTransactions(); renderBudgets(); renderSettings();
       toast('Data imported successfully');
-    } catch {
-      toast('Could not read that file', 'error');
-    }
+    } catch { toast('Could not read that file', 'error'); }
   };
   reader.readAsText(file);
   event.target.value = '';
 }
 
-/* ============================================================
-   PWA setup — runtime manifest + icons
-============================================================ */
+/* ---------- PWA ---------- */
 function generateIcon(size) {
   const c = document.createElement('canvas');
   c.width = c.height = size;
   const ctx = c.getContext('2d');
-  const grad = ctx.createLinearGradient(0, 0, size, size);
-  grad.addColorStop(0, '#10b981');
-  grad.addColorStop(1, '#0891b2');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, size, size);
+  const g = ctx.createLinearGradient(0, 0, size, size);
+  g.addColorStop(0, '#10b981'); g.addColorStop(1, '#0891b2');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, size, size);
   ctx.fillStyle = '#fff';
   ctx.font = `700 ${size * 0.55}px system-ui, -apple-system, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText('$', size / 2, size * 0.55);
   return c.toDataURL('image/png');
 }
-
 function setupPWA() {
-  const icon192 = generateIcon(192);
-  const icon512 = generateIcon(512);
+  const i192 = generateIcon(192), i512 = generateIcon(512);
   const manifest = {
-    name: 'Money Manager',
-    short_name: 'Money',
-    description: 'Track income, expenses, and budgets.',
-    start_url: location.pathname,
-    scope: location.pathname,
-    display: 'standalone',
-    orientation: 'portrait',
-    background_color: '#0b1220',
-    theme_color: '#0b1220',
+    name: 'Money Manager', short_name: 'Money',
+    description: 'Track income, expenses, and budgets across accounts.',
+    start_url: location.pathname, scope: location.pathname,
+    display: 'standalone', orientation: 'portrait',
+    background_color: '#0b1220', theme_color: '#0b1220',
     icons: [
-      { src: icon192, sizes: '192x192', type: 'image/png', purpose: 'any' },
-      { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any' },
-      { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+      { src: i192, sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: i512, sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: i512, sizes: '512x512', type: 'image/png', purpose: 'maskable' }
     ]
   };
   const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
   const link = document.createElement('link');
-  link.rel = 'manifest';
-  link.href = URL.createObjectURL(blob);
+  link.rel = 'manifest'; link.href = URL.createObjectURL(blob);
   document.head.appendChild(link);
-
   const apple = document.createElement('link');
-  apple.rel = 'apple-touch-icon';
-  apple.href = icon192;
+  apple.rel = 'apple-touch-icon'; apple.href = i192;
   document.head.appendChild(apple);
-
   const meta = document.createElement('meta');
-  meta.name = 'apple-mobile-web-app-capable';
-  meta.content = 'yes';
+  meta.name = 'apple-mobile-web-app-capable'; meta.content = 'yes';
   document.head.appendChild(meta);
 }
 
@@ -1125,33 +1195,22 @@ document.getElementById('install-btn').addEventListener('click', async () => {
   document.getElementById('install-btn').style.display = 'none';
 });
 
-/* ============================================================
-   Wire up form inputs
-============================================================ */
+/* ---------- Input wiring ---------- */
 document.getElementById('amount').addEventListener('input', updateSaveButton);
-document.getElementById('amount').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { e.preventDefault(); saveTransaction(); }
-});
-document.getElementById('note').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { e.preventDefault(); saveTransaction(); }
-});
-
-// Close sheets with Escape
+document.getElementById('amount').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveTransaction(); } });
+document.getElementById('note').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveTransaction(); } });
+document.getElementById('acct-initial').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveAccount(); } });
+document.getElementById('acct-name').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveAccount(); } });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeSheet(); closeConfirm(); }
+  if (e.key === 'Escape') { closeSheet(); closeConfirm(); closeAccountSheet(); }
 });
 
-/* ============================================================
-   Init
-============================================================ */
+/* ---------- Init ---------- */
 loadState();
 document.documentElement.setAttribute('data-theme', state.settings.theme);
 setupPWA();
 document.getElementById('date').value = new Date().toISOString().slice(0, 10);
-renderDashboard();
-renderTransactions();
-renderBudgets();
-renderSettings();
+renderDashboard(); renderTransactions(); renderBudgets(); renderSettings();
 </script>
 </body>
 </html>
